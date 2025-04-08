@@ -39,7 +39,6 @@
             autofocus
           />
 
-          <!-- Time Section -->
           <div class="time" (click)="startEditingTime(alarm)">
             <ng-container *ngIf="currentlyEditingTimeId !== alarm.id">
               {{ alarm.time }}
@@ -98,6 +97,13 @@
           <ion-label>Vibrate</ion-label>
           <ion-checkbox></ion-checkbox>
         </ion-item>
+        <ion-item>
+          <ion-label>Sound</ion-label>
+          <ion-select [(ngModel)]="alarm.sound" (ionChange)="playSound($event)">
+            <ion-select-option value="Default">Default</ion-select-option>
+            <ion-select-option value="Radial">Radial</ion-select-option>
+          </ion-select>
+        </ion-item>      
         <ion-item lines="none">
           <ion-label>Snooze Duration</ion-label>
           <ion-checkbox></ion-checkbox>
