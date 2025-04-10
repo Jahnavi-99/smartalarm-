@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { AlarmComponent } from './alarm.component';
 import { FormsModule } from '@angular/forms';
 import { SoundpickerComponent } from '../soundpicker/soundpicker.component';
+import { Media } from '@awesome-cordova-plugins/media/ngx';
 @NgModule({
   declarations: [AlarmComponent],
   imports: [
@@ -13,6 +14,7 @@ import { SoundpickerComponent } from '../soundpicker/soundpicker.component';
     FormsModule,
     SoundpickerComponent
   ],
-  exports: [AlarmComponent] 
+  exports: [AlarmComponent],
+  providers:[Media], 
 })
 export class AlarmModule {}

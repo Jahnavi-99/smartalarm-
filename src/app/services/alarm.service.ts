@@ -1,7 +1,9 @@
+
 import { Injectable } from '@angular/core';
 import { Alarm } from '../Models/alarm.model';
 import { LocalNotifications } from '@awesome-cordova-plugins/local-notifications/ngx';
 import { Media, MediaObject } from '@awesome-cordova-plugins/media/ngx';
+
 
 @Injectable({
   providedIn: 'root',
@@ -27,17 +29,18 @@ export class AlarmService {
     { id: 6, label: '+ Add Label', time: '09:00 AM', days: ['Sun', 'Mon', 'Tue'], enabled: false, group: 'Others', sound: '1' },
   ];
 
-  constructor(private localNotifications: LocalNotifications, private media: Media) {
+  constructor(private localNotifications: LocalNotifications, private media: Media,) {
     this.createNotificationChannels();
     this.requestNotificationPermission();
     this.handleNotificationTriggers();
+    
   }
 
   handleNotificationTriggers(): void {
     this.localNotifications.on('trigger').subscribe((notification) => {
       console.log('🔔 Notification triggered:', notification);
 
-      const soundFile = notification.sound || 'alarm1.mp3'; // Use default if not provided
+      const soundFile = notification.sound || 'alarm1.mp3'; 
       this.playLoopingSound(soundFile);
     });
 
@@ -55,7 +58,7 @@ export class AlarmService {
 
     this.currentMedia.onStatusUpdate.subscribe((status: number) => {
       if (status === 4) {
-        this.currentMedia?.play(); // Loop manually
+        this.currentMedia?.play(); 
       }
     });
 
@@ -98,14 +101,14 @@ export class AlarmService {
 
     const sound = this.sounds.find((s) => s.id === +alarm.sound);
 
+    
     await this.localNotifications.schedule([
       {
-        id: alarm.id,
+        id: alarm.id, 
         title: `🔔 ${alarm.label || 'Alarm'}`,
         text: `Alarm set for ${alarmTime.toLocaleTimeString()}`,
         trigger: { at: alarmTime },
-        channel: `alarm${sound?.id || 1}-channel`,
-        sound: sound?.path || 'alarm1', // Default sound path
+        sound:  'alarm1', // Default sound path
         actions: [
           {
             id: 'stop',
@@ -113,7 +116,12 @@ export class AlarmService {
             launch: true,
           },
         ],
+        autoClear:false,
+        
         silent: false,
+        sticky:true,
+        foreground: true,
+        channel: 'alarm1', // Ensure this matches the channel created
       },
     ]);
 
@@ -148,14 +156,14 @@ export class AlarmService {
       alarmDate.setHours(hour, minute, 0, 0);
 
       if (alarmDate.getTime() > now.getTime()) {
-        await this.localNotifications.schedule([
+        this.localNotifications.schedule([
           {
             id: alarm.id * 10 + targetDay,
             title: `🔔 ${alarm.label || 'Alarm'}`,
             text: `Alarm set for ${day} at ${alarm.time}`,
             trigger: { at: alarmDate },
-            channel: `alarm${sound?.id || 1}-channel`,
-            sound: sound?.path || 'assets/sounds/alarm1.mp3',
+            sound: 'file://alarm1.mp3', // Default sound path
+            lockscreen: true,
             actions: [
               {
                 id: 'stop',
@@ -164,6 +172,11 @@ export class AlarmService {
               },
             ],
             silent: false,
+            sticky: true,
+            foreground: true,
+            channel: 'mychannel1', // Ensure this matches the channel created
+            autoClear: false,
+            vibrate: true,
           },
         ]);
         console.log(`✅ Alarm scheduled for ${day} at ${alarmDate}`);
@@ -174,6 +187,16 @@ export class AlarmService {
   }
 
   async createNotificationChannels(): Promise<void> {
+    this.localNotifications.setDefaults({
+      androidChannelId: "mychannel1", // string, to separate something in the id, use "_" instead of "-"
+      androidChannelName: "My Channel Name", // string, defaults to "Default Channel"
+      androidChannelDescription: "Description of channel", // string (optional)
+      androidChannelImportance: "IMPORTANCE_DEFAULT", // string (optional), see property documentation for importance
+      androidChannelEnableLights: true, // bool (optional), default is false
+      androidChannelEnableVibration: true, // bool (optional), default is false
+      sound: 'file://alarm1.mp3', // string (optional), defaults to "default", which represents the default sound for a notification. If you set `null`, no sound will be set for the notification
+      androidChannelSoundUsage: 5 // int (optional), default is USAGE_NOTIFICATION
+    })
     for (const sound of this.sounds) {
       try {
         console.log(`✅ Channel created for ${sound.name}`);

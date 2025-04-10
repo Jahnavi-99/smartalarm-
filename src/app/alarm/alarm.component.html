@@ -67,7 +67,8 @@
 
         <!-- Toggle & Options Icon -->
         <div class="right">
-          <ion-toggle [checked]="alarm.enabled" (ionChange)="toggleAlarm(alarm)" color="danger" size="small"></ion-toggle>
+          <ion-toggle [(ngModel)]="alarm.enabled" (ionChange)="toggleAlarm(alarm)" color="danger" size="small"></ion-toggle>
+
           <ion-icon name="chevron-down-outline" (click)="toggleOptions(alarm.id)"></ion-icon>
         </div>
       </div>

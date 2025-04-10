@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IonicModule, NavController } from '@ionic/angular';
 import { Alarm } from '../Models/alarm.model';
 import { AlarmService } from '../services/alarm.service';
-import { al } from '@angular/router/router_module.d-6zbCxc1T';
+
 
 @Component({
   selector: 'app-soundpicker',

@@ -144,34 +144,45 @@ export class AlarmComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.newTime) {
       alarm.time = this.formatTime(this.newTime);
       console.log(`Time saved for Alarm ID ${alarm.id}: ${alarm.time}`);
-      this.alarmService.ScheduleAlarmForDays(alarm);
+      alarm.enabled = true;  // ✅ Turn ON the toggle
+      this.alarmService.ScheduleAlarmForDays(alarm); // Reschedule
     }
-    this.currentlyEditingTimeId = ''; // Exit editing mode
-    this.cdRef.detectChanges(); // Trigger change detection to update the view
+    this.currentlyEditingTimeId = '';
+    this.cdRef.detectChanges();
   }
+  
+  
+  
 
   updateTime(event: any): void {
-    const selectedTime = event.detail.value; // Get the selected time from the event
+    const selectedTime = event.detail.value; 
     if (selectedTime) {
-      this.newTime = selectedTime; // Update the newTime property
+      this.newTime = selectedTime; 
       console.log(`Selected time: ${this.newTime}`);
     }
   }
 
   exitTimeEditing(): void {
-    this.currentlyEditingTimeId = ''; // Exit editing mode
+    this.currentlyEditingTimeId = ''; 
   }
 
   cancelTimeEditing(): void {
-    this.currentlyEditingTimeId = ''; // Exit editing mode without saving
+    const alarm = this.alarms.find(a => a.id === this.currentlyEditingTimeId);
+    if (alarm) {
+      alarm.enabled = false; 
+    }
+    this.currentlyEditingTimeId = '';
+    this.cdRef.detectChanges();
   }
+  
+  
 
   formatTime(isoString: string): string {
     const date = new Date(isoString);
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
+    const formattedHours = hours % 12 || 12; 
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
   }
@@ -179,9 +190,11 @@ export class AlarmComponent implements OnInit, OnDestroy, AfterViewInit {
   saveLabel(alarm: Alarm): void {
     if (this.newLabel.trim()) {
       alarm.label = this.newLabel.trim();
+      alarm.enabled = true; 
     }
     this.currentlyEditingId = null;
   }
+  
 
   logAllSelectedValues(): void {
     console.log('Alarms:', this.alarms);

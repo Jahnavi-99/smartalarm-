@@ -17,6 +17,6 @@ import { LocalNotifications } from '@awesome-cordova-plugins/local-notifications
     AppRoutingModule
   ],
   bootstrap: [AppComponent],
-  providers: [LocalNotifications]
+  providers: [LocalNotifications],
 })
 export class AppModule {}
